@@ -21,6 +21,9 @@ export const metadata: Metadata = {
   title: "REFI - Calculadora de Refinanciamiento",
   description: "Calcula cuánto ahorras refinanciando tu deuda",
   generator: "v0.app",
+  icons:{
+    icon: "/favicon.ico",
+  }
 }
 
 export default function RootLayout({
@@ -29,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${roboto.variable} ${poppins.variable} antialiased`}>
+    <html lang="es" className={`${roboto.variable} ${poppins.variable} antialiased`}>
       <body>{children}</body>
     </html>
   )

@@ -212,7 +212,7 @@ export function PaymentSchedule({ calculations, formatCurrency }: PaymentSchedul
               <strong>Pago:</strong> Es tu cuota mensual total (capital + intereses)
             </li>
             <li>
-              <strong>Interés:</strong> Parte de tu pago que se va en intereses (dinero "perdido")
+              <strong>Interés:</strong> Parte de tu pago que se va en intereses (dinero &quot;perdido&quot;)
             </li>
             <li>
               <strong>Saldo:</strong> Cuánto te queda por pagar después de cada cuota
