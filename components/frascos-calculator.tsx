@@ -5,13 +5,9 @@ import {
   DollarSign,
   BarChart2,
   Loader2,
-  ChevronDown,
-  ChevronUp,
   AlertTriangle,
   Info,
-  Banknote,
   TrendingUp,
-  Calendar,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

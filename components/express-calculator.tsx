@@ -33,8 +33,6 @@ export default function ExpressCalculator() {
     const principal = Number.parseFloat(calculatedAmount) || 0;
     const annualTNA = Number.parseFloat(calculatedRate) / 100 || 0;
     const months = Number.parseInt(calculatedRate) || 0;
-    const ivaRate = 0.21;
-    const stampTaxRate = 0.012;
 
     if (principal <= 0 || principal > maxAmount || annualTNA <= 0) {
       return { isValid: false };

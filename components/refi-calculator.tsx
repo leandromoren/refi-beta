@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Calculator, Info } from "lucide-react";
+import { Info } from "lucide-react";
 import { DebtComparison } from "./debt-comparison";
 import { PaymentSchedule } from "./payment-schedule";
 import { SavingsBreakdown } from "./savings-breakdown";
