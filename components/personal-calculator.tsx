@@ -95,6 +95,7 @@ export default function PersonalLoanCalculator() {
     if (!calculations.isValid) return [];
 
     const table = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let remainingPrincipal: any = calculations.principal;
     const monthlyRate = Number.parseFloat(rate) / 100 / 12;
 

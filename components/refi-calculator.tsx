@@ -25,10 +25,11 @@ export function RefiCalculator() {
   const [currentRate, setCurrentRate] = useState<string>("1000");
   const [newRate, setNewRate] = useState<string>("100");
   const [years, setYears] = useState<string>("5");
-  const [province, setProvince] = useState<string>("6");
+  const [province] = useState<string>("6");
   const [showResults, setShowResults] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showAdvancedDetails, setShowAdvancedDetails] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [calculatedData, setCalculatedData] = useState<any>(null);
   const [selectedTaxes, setSelectedTaxes] = useState({
     iva: true,
