@@ -1,13 +1,11 @@
-import { DebtCalculator } from "@/components/debt-calculator";
 import Footer from "@/components/Footer";
+import HomeWidgets from "@/components/HomeWidgets";
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-white">
-      <div className="container mx-auto px-2 py-4">
-        <DebtCalculator />
-      </div>
+      <HomeWidgets />
       <Footer />
     </main>
   );
-} 
+}

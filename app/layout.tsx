@@ -18,9 +18,9 @@ const poppins = Poppins({
 })
 
 export const metadata: Metadata = {
-  title: "REFI - Calculadora de Refinanciamiento",
+  title: "PRESIM - Simulador de préstamos",
   description: "Calcula cuánto ahorras refinanciando tu deuda",
-  generator: "v0.app",
+  generator: "Next.js",
   icons:{
     icon: "/favicon.ico",
   }
