@@ -18,7 +18,6 @@ import { SavingsBreakdown } from "./savings-breakdown";
 import { ArgentineTaxBreakdown } from "./argentine-tax-breakdown";
 import Header from "./header";
 import Breadcrumb from "./ui/breadcrumb";
-import InvalidSim from "./ui/invalid-sim";
 import { Card } from "./ui/card";
 
 export function RefiCalculator() {
