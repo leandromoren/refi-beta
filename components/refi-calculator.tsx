@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Info } from "lucide-react";
+import { Info, LineChart } from "lucide-react";
 import { DebtComparison } from "./debt-comparison";
 import { PaymentSchedule } from "./payment-schedule";
 import { SavingsBreakdown } from "./savings-breakdown";
@@ -19,6 +19,7 @@ import { ArgentineTaxBreakdown } from "./argentine-tax-breakdown";
 import Header from "./header";
 import Breadcrumb from "./ui/breadcrumb";
 import InvalidSim from "./ui/invalid-sim";
+import { Card } from "./ui/card";
 
 export function RefiCalculator() {
   const [amount, setAmount] = useState<string>("1000");
@@ -53,7 +54,7 @@ export function RefiCalculator() {
 
     const calculateArgentineTaxes = (
       interestAmount: number,
-      principal: number,
+      principal: number
     ) => {
       const iva = selectedTaxes.iva ? interestAmount * 0.21 : 0;
       const impuestoCheque = selectedTaxes.impuestoCheque
@@ -76,7 +77,7 @@ export function RefiCalculator() {
     const calculateMonthlyPayment = (
       principal: number,
       annualRate: number,
-      months: number,
+      months: number
     ) => {
       if (annualRate === 0) return principal / months;
       const monthlyRate = annualRate / 12;
@@ -89,12 +90,12 @@ export function RefiCalculator() {
     const currentMonthlyPayment = calculateMonthlyPayment(
       principal,
       currentTNA,
-      monthsTotal,
+      monthsTotal
     );
     const newMonthlyPayment = calculateMonthlyPayment(
       principal,
       newTNA,
-      monthsTotal,
+      monthsTotal
     );
 
     const currentTotalPayment = currentMonthlyPayment * monthsTotal;
@@ -105,7 +106,7 @@ export function RefiCalculator() {
 
     const currentTaxes = calculateArgentineTaxes(
       currentTotalInterest,
-      principal,
+      principal
     );
     const newTaxes = calculateArgentineTaxes(newTotalInterest, principal);
 
@@ -170,7 +171,7 @@ export function RefiCalculator() {
 
   const handleTaxChange = (
     taxType: keyof typeof selectedTaxes,
-    checked: boolean,
+    checked: boolean
   ) => {
     setSelectedTaxes((prev) => ({
       ...prev,
@@ -414,7 +415,7 @@ export function RefiCalculator() {
                               </span>
                               <span className="text-sm font-medium text-red-600">
                                 {formatCurrency(
-                                  calculatedData.currentMonthlyPayment,
+                                  calculatedData.currentMonthlyPayment
                                 )}
                               </span>
                             </div>
@@ -424,7 +425,7 @@ export function RefiCalculator() {
                               </span>
                               <span className="text-sm font-medium text-green-600">
                                 {formatCurrency(
-                                  calculatedData.newMonthlyPayment,
+                                  calculatedData.newMonthlyPayment
                                 )}
                               </span>
                             </div>
@@ -435,7 +436,7 @@ export function RefiCalculator() {
                                 </span>
                                 <span className="text-sm font-bold text-green-600">
                                   {formatCurrency(
-                                    calculatedData.monthlySavings,
+                                    calculatedData.monthlySavings
                                   )}
                                 </span>
                               </div>
@@ -490,7 +491,18 @@ export function RefiCalculator() {
                       </div>
                     </div>
                   ) : (
-                    <InvalidSim />
+                    <div className="space-y-4 text-gray-700">
+                      <Card className="shadow-none border-dashed bg-gray-50 flex flex-col items-center p-6 text-center">
+                        <LineChart className="h-16 w-16 mb-4 text-gray-400" />
+                        <h3 className="text-xl font-semibold text-gray-800">
+                          Resultados de la simulación
+                        </h3>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Simula una inversión para ver los resultados
+                          reflejados aquí.
+                        </p>
+                      </Card>
+                    </div>
                   )}
                 </div>
               </div>

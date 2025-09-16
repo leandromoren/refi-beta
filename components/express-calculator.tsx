@@ -224,9 +224,9 @@ export default function ExpressCalculator() {
                       <div className="space-y-4">
                         <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
                           <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                            Pagás una cuota de
+                            Devolvés
                           </p>
-                          <p className="text-2xl font-bold text-black dark:text-white">
+                          <p className="text-2xl text-black dark:text-white">
                             {formatCurrency(calculations.totalToPay || 0)}
                           </p>
                         </div>
@@ -236,7 +236,7 @@ export default function ExpressCalculator() {
                             <p className="text-sm text-gray-600 dark:text-gray-400">
                               Intereses
                             </p>
-                            <p className="text-base font-semibold text-black dark:text-white">
+                            <p className="text-base  text-black dark:text-white">
                               {formatCurrency(calculations.interest || 0)}
                             </p>
                           </div>
@@ -244,7 +244,7 @@ export default function ExpressCalculator() {
                             <p className="text-sm text-gray-600 dark:text-gray-400">
                               IVA + Sellado
                             </p>
-                            <p className="text-base font-semibold text-black dark:text-white">
+                            <p className="text-base text-black dark:text-white">
                               {formatCurrency(
                                 (calculations.ivaOnInterest ?? 0) +
                                   (calculations.sellado ?? 0)
@@ -255,10 +255,10 @@ export default function ExpressCalculator() {
 
                         <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
                           <div className="flex justify-between items-center">
-                            <span className="text-base font-semibold text-gray-700 dark:text-gray-300">
+                            <span className="text-base text-gray-700 dark:text-gray-300">
                               CFT anual (estimado)
                             </span>
-                            <span className="text-lg font-bold text-black dark:text-white">
+                            <span className="text-lg  text-black dark:text-white">
                               {(calculations.annualCFT ?? 0).toFixed(2)}%
                             </span>
                           </div>

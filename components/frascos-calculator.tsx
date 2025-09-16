@@ -65,7 +65,7 @@ export default function FrascosCalculator() {
     if (!investmentAmount || investmentAmount <= 0) return;
 
     setLoading(true);
-    setSimulationResult(null); // Borra los resultados anteriores
+    setSimulationResult(null);
     setShowDetails(true);
 
     const tnaValue = getTnaValue(selectedDays);

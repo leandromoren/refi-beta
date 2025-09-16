@@ -136,7 +136,7 @@ export default function SimuladorPrestamosPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <Header />
       <div className="max-w-7xl mx-auto space-y-8 p-8">
         <Breadcrumb pathname="Personal en UVAs" />

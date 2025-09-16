@@ -41,13 +41,6 @@ export default function HomeWidgets() {
             "Recuperá el dinero que gastaste desde tu cuenta y devolvelo en 3 o 6 cuotas",
           link: "/cuotificacion",
         },
-         {
-          title: "Adelanto de sueldo",
-          list: [
-           "Pedí hoy hasta la mitad de tu sueldo y devolvelo en hasta 45 días.",
-          ],
-          link: "/adelanto",
-        },
       ],
     },
     {
