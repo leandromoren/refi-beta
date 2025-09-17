@@ -207,7 +207,7 @@ export default function SimuladorHipotecarioPage() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="loan-term">Plazo del préstamo</Label>
+                  <Label htmlFor="loan-term">Plazo del préstamo (años)</Label>
                   <div className="relative">
                     <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
                     <Input
@@ -413,13 +413,13 @@ export default function SimuladorHipotecarioPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <h4 className="font-semibold text-lg flex items-center mb-1">
-                    <span className="text-xl mr-2">📅</span> Mes
+                   Mes
                   </h4>
                   <p>El número de cuota correspondiente al pago.</p>
                 </div>
                 <div>
                   <h4 className="font-semibold text-lg flex items-center mb-1">
-                    <span className="text-xl mr-2">💰</span> Pago Mensual
+                    Pago Mensual
                   </h4>
                   <p>
                     El valor total de la cuota que se paga cada mes, que incluye
@@ -428,7 +428,7 @@ export default function SimuladorHipotecarioPage() {
                 </div>
                 <div>
                   <h4 className="font-semibold text-lg flex items-center mb-1">
-                    <span className="text-xl mr-2">🏛️</span> Capital
+                    Capital
                   </h4>
                   <p>
                     La porción del pago que reduce el monto original del
@@ -437,7 +437,7 @@ export default function SimuladorHipotecarioPage() {
                 </div>
                 <div>
                   <h4 className="font-semibold text-lg flex items-center mb-1">
-                    <span className="text-xl mr-2">📉</span> Intereses
+                   Intereses
                   </h4>
                   <p>
                     El costo del préstamo. Se calcula sobre el saldo pendiente y
@@ -446,7 +446,7 @@ export default function SimuladorHipotecarioPage() {
                 </div>
                 <div className="md:col-span-2">
                   <h4 className="font-semibold text-lg flex items-center mb-1">
-                    <span className="text-xl mr-2">⚖️</span> Saldo
+                     Saldo
                   </h4>
                   <p>
                     El monto de deuda pendiente después de realizar cada pago.

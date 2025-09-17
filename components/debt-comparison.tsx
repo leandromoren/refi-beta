@@ -32,7 +32,6 @@ export function DebtComparison({ calculations, formatCurrency }: DebtComparisonP
 
       <div className="p-6 bg-white dark:bg-black rounded-xl border border-gray-200 dark:border-gray-700">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Deuda actual */}
           <div className="space-y-3">
             <div className="flex items-center gap-3 mb-4">
               <Badge variant="destructive" className="text-xs bg-red-600 hover:bg-red-700">
@@ -67,7 +66,6 @@ export function DebtComparison({ calculations, formatCurrency }: DebtComparisonP
             </div>
           </div>
 
-          {/* Nueva deuda */}
           <div className="space-y-3">
             <div className="flex items-center gap-3 mb-4">
               <Badge className="bg-green-600 hover:bg-green-700 text-xs text-white">Nueva deuda</Badge>

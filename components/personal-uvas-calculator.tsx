@@ -1,12 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import {
-  Info,
-  ChevronDown,
-  ChevronUp,
-  Loader2,
-} from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { Info, ChevronDown, ChevronUp, Loader2, BarChart2, Pencil, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -18,11 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Header from "./header";
 import Breadcrumb from "./ui/breadcrumb";
 
@@ -48,21 +39,22 @@ interface SimulationData {
 }
 
 export default function SimuladorPrestamosPage() {
-  const uvaValue = 1578.79;
   const tna = 0.24;
   const cftea = 0.3153;
-  const maxLoanAmount = 1999995;
-
+  const maxLoanAmount = 10000000;
+  
   const [loanAmount, setLoanAmount] = useState(500000);
   const [loanTerm, setLoanTerm] = useState(24);
-  const [firstPaymentDate, setFirstPaymentDate] = useState("2025-09-24");
   const [showDetails, setShowDetails] = useState(false);
   const [simulationData, setSimulationData] = useState<SimulationData | null>(
     null
   );
   const [loading, setLoading] = useState(false);
+  const [uvaValue, setUvaValue] = useState<number | null>(null);
+  const [isEditingUva, setIsEditingUva] = useState(false);
 
-  const formatCurrency = (amount: number) => {
+  const formatCurrency = (amount: number | null) => {
+    if (amount === null) return "-";
     return new Intl.NumberFormat("es-AR", {
       style: "currency",
       currency: "ARS",
@@ -82,6 +74,11 @@ export default function SimuladorPrestamosPage() {
   };
 
   const handleSimulate = () => {
+    if (uvaValue === null || loanAmount <= 0) {
+      alert("Por favor, ingresa un monto válido o espera a que se cargue el valor del UVA.");
+      return;
+    }
+
     setLoading(true);
     setSimulationData(null);
 
@@ -131,23 +128,21 @@ export default function SimuladorPrestamosPage() {
   const handleCancel = () => {
     setSimulationData(null);
     setShowDetails(false);
-    setLoanAmount(500000);
-    setLoanTerm(24);
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gray-50">
       <Header />
       <div className="max-w-7xl mx-auto space-y-8 p-8">
         <Breadcrumb pathname="Personal en UVAs" />
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-xl">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+          <Card className="shadow-lg">
+            <CardHeader className="p-6">
+              <CardTitle className="text-2xl font-bold text-gray-800">
                 Parámetros del Préstamo
               </CardTitle>
             </CardHeader>
-            <CardContent className="flex flex-col justify-evenly h-full">
+            <CardContent className="p-6 pt-0 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="loan-amount">Monto</Label>
@@ -155,9 +150,7 @@ export default function SimuladorPrestamosPage() {
                     id="loan-amount"
                     type="number"
                     value={loanAmount}
-                    onChange={(e) =>
-                      setLoanAmount(parseFloat(e.target.value))
-                    }
+                    onChange={(e) => setLoanAmount(parseFloat(e.target.value))}
                     placeholder="Monto del préstamo"
                   />
                   <p className="text-sm text-gray-500">
@@ -168,21 +161,17 @@ export default function SimuladorPrestamosPage() {
                   <Label htmlFor="loan-term">Plazo</Label>
                   <Select
                     value={loanTerm.toString()}
-                    onValueChange={(value) =>
-                      setLoanTerm(parseInt(value))
-                    }
+                    onValueChange={(value) => setLoanTerm(parseInt(value))}
                   >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Seleccionar plazo" />
                     </SelectTrigger>
                     <SelectContent>
-                      {[12, 24, 36, 48, 60, 72, 84, 96, 108, 120].map(
-                        (term) => (
-                          <SelectItem key={term} value={term.toString()}>
-                            {term} cuotas
-                          </SelectItem>
-                        )
-                      )}
+                      {[12, 18, 24].map((term) => (
+                        <SelectItem key={term} value={term.toString()}>
+                          {term} cuotas
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <p className="text-sm text-gray-500">
@@ -200,127 +189,160 @@ export default function SimuladorPrestamosPage() {
                     className="bg-gray-100"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="first-payment-date">
-                    Fecha de la primera cuota
-                  </Label>
-                  <Input
-                    id="first-payment-date"
-                    type="date"
-                    value={firstPaymentDate}
-                    onChange={(e) => setFirstPaymentDate(e.target.value)}
-                  />
-                </div>
               </div>
-              <div className="mt-6">
-                <Button
-                  className="w-full cursor-pointer bg-orange-500 hover:bg-orange-600"
-                  onClick={handleSimulate}
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Simulando...
-                    </>
-                  ) : (
-                    "Simular"
-                  )}
-                </Button>
-              </div>
+              <Button
+                className="w-full cursor-pointer bg-orange-500 hover:bg-orange-600 font-semibold"
+                onClick={handleSimulate}
+                disabled={loading || uvaValue === null}
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Simulando...
+                  </>
+                ) : (
+                  "Simular Préstamo"
+                )}
+              </Button>
             </CardContent>
           </Card>
 
-          {/* Card: Simulación (el sidebar) */}
-          <Card>
-            <CardContent className="p-6 space-y-6">
-              <CardHeader className="p-0">
-                <CardTitle className="text-xl text-gray-900">
-                  Simulación
-                </CardTitle>
-              </CardHeader>
+          <Card className="shadow-lg h-full">
+            <CardContent className="p-6 h-full flex flex-col justify-between">
+              <div className="space-y-6">
+                <CardHeader className="p-0">
+                  <CardTitle className="text-2xl font-bold text-gray-800">
+                    Resultados de tu simulación
+                  </CardTitle>
+                </CardHeader>
 
-              <p className="text-sm text-gray-500">
-                *Los valores pueden variar según la UVA del día.
-                <br />
-                **Valor UVA hoy:**{" "}
-                <span className="font-semibold text-gray-900">
-                  {formatCurrency(uvaValue)}
-                </span>
-              </p>
-
-              {loading ? (
-                <div className="flex flex-col items-center justify-center p-8">
-                  <Loader2 className="h-8 w-8 text-orange-500 animate-spin" />
-                  <p className="mt-4 text-sm text-gray-600">
-                    Calculando tu préstamo...
-                  </p>
+                <div className="flex items-center text-sm text-gray-500 gap-2">
+                  <span className="font-semibold text-gray-900">
+                    Valor UVA hoy:
+                  </span>
+                  {isEditingUva ? (
+                    <div className="flex items-center">
+                      <Input
+                        type="number"
+                        value={uvaValue ?? ""}
+                        onChange={(e) => setUvaValue(parseFloat(e.target.value))}
+                        className="w-32 h-8 text-center"
+                      />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setIsEditingUva(false)}
+                      >
+                        <Check className="h-4 w-4 text-green-500" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-900 font-medium">
+                        {formatCurrency(uvaValue)}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setIsEditingUva(true)}
+                        className="h-6 w-6"
+                      >
+                        <Pencil className="h-4 w-4 text-gray-500 hover:text-gray-900" />
+                      </Button>
+                      <a
+                        href="https://ikiwi.net.ar/valor-uva/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 hover:underline transition-colors text-xs"
+                      >
+                        (Verificar)
+                      </a>
+                    </div>
+                  )}
+                  <Info className="h-4 w-4 text-gray-500" />
                 </div>
-              ) : simulationData ? (
-                <>
-                  <div className="space-y-2">
-                    <p className="text-gray-600">
-                      Valor del préstamo en UVAs:
-                    </p>
-                    <p className="font-semibold text-xl">
-                      {simulationData.loanInUVA.toFixed(2)} UVAs
+
+                {loading ? (
+                  <div className="flex flex-col items-center justify-center p-8">
+                    <Loader2 className="h-10 w-10 text-blue-500 animate-spin" />
+                    <p className="mt-4 text-base text-gray-600">
+                      Calculando tu préstamo...
                     </p>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-1">
-                      <p className="text-gray-600">Cuota en UVAs</p>
-                      <p className="font-semibold text-xl">
-                        {simulationData.monthlyPaymentUVA.toFixed(2)} UVAs
-                      </p>
+                ) : simulationData ? (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-1 p-4 bg-gray-50 rounded-lg">
+                        <p className="text-sm font-medium text-gray-600">
+                          Valor del préstamo en UVAs
+                        </p>
+                        <p className="font-bold text-2xl text-purple-600">
+                          {simulationData.loanInUVA.toFixed(2)} UVAs
+                        </p>
+                      </div>
+                      <div className="space-y-1 p-4 bg-gray-50 rounded-lg">
+                        <p className="text-sm font-medium text-gray-600">
+                          Cuota mensual promedio
+                        </p>
+                        <p className="font-bold text-2xl text-green-600">
+                          {formatCurrency(simulationData.monthlyPaymentARS)}
+                        </p>
+                      </div>
                     </div>
-                    <div className="space-y-1">
-                      <p className="text-gray-600">Cuota promedio*</p>
-                      <p className="font-semibold text-xl">
-                        {formatCurrency(simulationData.monthlyPaymentARS)}
-                      </p>
+
+                    <div className="grid grid-cols-2 gap-4 text-sm font-medium text-gray-700">
+                      <div className="flex justify-between items-center p-2 rounded-md border border-gray-200">
+                        <span>TNA</span>
+                        <span className="font-semibold">
+                          {formatPercentage(simulationData.tna)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center p-2 rounded-md border border-gray-200">
+                        <span>CFTEA + IVA</span>
+                        <span className="font-semibold">
+                          {formatPercentage(simulationData.cftea)}
+                        </span>
+                      </div>
                     </div>
+                  </>
+                ) : (
+                  <div className="flex flex-col items-center justify-center p-8 text-gray-400">
+                    <BarChart2 className="h-12 w-12 mb-4" />
+                    <h4 className="text-lg font-semibold">
+                      Resultados de tu simulación
+                    </h4>
+                    <p className="text-sm text-center mt-1">
+                      Los datos de tu préstamo aparecerán aquí.
+                    </p>
                   </div>
-                  <div className="flex justify-between items-center text-sm mt-4">
-                    <div className="space-y-1">
-                      <p className="text-gray-600">TNA</p>
-                      <p className="font-medium text-gray-900">
-                        {formatPercentage(simulationData.tna)}
-                      </p>
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-gray-600">CFTEA + IVA</p>
-                      <p className="font-medium text-gray-900">
-                        {formatPercentage(simulationData.cftea)}
-                      </p>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <div className="flex items-center justify-center p-8 text-gray-500">
-                  <Info className="mr-2 h-4 w-4" />
-                  Los resultados de tu simulación aparecerán aquí.
+                )}
+              </div>
+
+              {simulationData && (
+                <div className="pt-6 border-t mt-6">
+                  <Button
+                    variant="outline"
+                    className="w-full text-base font-semibold border-gray-300 hover:bg-gray-100"
+                    onClick={handleCancel}
+                  >
+                    Nueva Simulación
+                  </Button>
                 </div>
               )}
             </CardContent>
-            <div className="flex justify-between p-6 pt-0">
-              <Button
-                variant="outline"
-                className="cursor-pointer"
-                onClick={handleCancel}
-              >
-                Cancelar
-              </Button>
-            </div>
           </Card>
         </div>
 
-        {/* Card: Cuadro de Amortización (debajo de los dos elementos de arriba) */}
         {simulationData && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex justify-between items-center">
+          <Card className="shadow-lg">
+            <CardHeader className="p-6">
+              <CardTitle className="flex justify-between items-center text-2xl font-bold text-gray-800">
                 Cuadro de Amortización
-                <Button variant="ghost" onClick={() => setShowDetails(!showDetails)}>
+                <Button
+                  variant="ghost"
+                  onClick={() => setShowDetails(!showDetails)}
+                  className="cursor-pointer text-gray-500 hover:text-gray-900"
+                >
                   {showDetails ? (
                     <>
                       Ocultar detalles
@@ -335,59 +357,62 @@ export default function SimuladorPrestamosPage() {
                 </Button>
               </CardTitle>
             </CardHeader>
-            <CardContent className="overflow-x-auto">
-              <Alert className="mb-4">
-                <AlertTitle>
+            <CardContent className="p-6 pt-0 overflow-x-auto">
+              <Alert className="mb-4 bg-blue-50 border-blue-200">
+                <AlertTitle className="text-blue-700">
                   ¿Qué incluye el cálculo?
                 </AlertTitle>
-                <AlertDescription>
-                  La **Cuota promedio** se calcula con el sistema de amortización **Francés**, que mantiene el valor de la cuota constante.
-                  El **CFTEA + IVA** (Costo Financiero Total Efectivo Anual) incluye la tasa nominal anual (**TNA**) más todos los costos adicionales como el **IVA sobre intereses** y el **sellado**.
+                <AlertDescription className="text-blue-600">
+                  La **Cuota promedio** se calcula con el sistema de
+                  amortización **Francés**, que mantiene el valor de la cuota
+                  constante. El **CFTEA + IVA** (Costo Financiero Total Efectivo
+                  Anual) incluye la tasa nominal anual (**TNA**) más todos los
+                  costos adicionales como el **IVA sobre intereses**.
                 </AlertDescription>
               </Alert>
               {showDetails && (
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+                <table className="min-w-full divide-y divide-gray-200 rounded-lg overflow-hidden">
+                  <thead className="bg-gray-100">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Cuota
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Capital
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Intereses
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         IVA
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Total
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Saldo
                       </th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {simulationData.amortizationTable.map((row) => (
-                      <tr key={row.month}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <tr key={row.month} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                           {row.month}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                           {formatCurrency(row.principal)}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                           {formatCurrency(row.interest)}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                           {formatCurrency(row.iva)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
                           {formatCurrency(row.total)}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                           {formatCurrency(row.balance)}
                         </td>
                       </tr>

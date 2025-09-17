@@ -9,16 +9,10 @@ import { Button } from "@/components/ui/button";
 import { Calculator } from "lucide-react";
 import InvalidSim from "./ui/invalid-sim";
 
-/* Préstamo express ofrece financiamiento en hasta 48 meses
-Esta línea de créditos personales tiene montos hasta $1.000.000,
-Devolvelo a los 45 días en una sola cuota.
-impuestos: La amortización de capital, interés, IVA sobre intereses y sellado.
-*/
-
 export default function ExpressCalculator() {
-  const [amount, setAmount] = useState<string>("0");
+  const [amount, setAmount] = useState<string>(""); // Cambiado a string vacío para mejor validación
   const [calculatedAmount, setCalculatedAmount] = useState<string>("0");
-  const [rate, setRate] = useState<string>("0"); // TNA
+  const [rate, setRate] = useState<string>(""); // Cambiado a string vacío
   const [calculatedRate, setCalculatedRate] = useState<string>("0");
   const [showResults, setShowResults] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -28,6 +22,12 @@ export default function ExpressCalculator() {
   const maxAmount = 1000000;
   const daysInTerm = 45;
   const daysInYear = 365;
+
+  const isButtonDisabled = useMemo(() => {
+    const numAmount = Number.parseFloat(amount);
+    const numRate = Number.parseFloat(rate);
+    return isNaN(numAmount) || numAmount <= 0 || isNaN(numRate) || numRate <= 0;
+  }, [amount, rate]);
 
   const calculations = useMemo(() => {
     const principal = Number.parseFloat(calculatedAmount) || 0;
@@ -71,18 +71,19 @@ export default function ExpressCalculator() {
   };
 
   const handleCalculate = async () => {
-    setIsLoading(true);
-    setShowResults(false);
-    setError("");
-
-    setCalculatedAmount(amount);
-    setCalculatedRate(rate);
-
+    // Las validaciones de 0 o negativos ya están en isButtonDisabled
+    // Se mantiene la validación del monto máximo aquí
     if (Number.parseFloat(amount) > maxAmount) {
       setError(`El monto máximo es de $${maxAmount.toLocaleString()}`);
       setIsLoading(false);
       return;
     }
+
+    setIsLoading(true);
+    setShowResults(false);
+    setError("");
+    setCalculatedAmount(amount);
+    setCalculatedRate(rate);
 
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
@@ -170,7 +171,7 @@ export default function ExpressCalculator() {
                   <Button
                     onClick={handleCalculate}
                     className="flex-1 h-12 text-base cursor-pointer font-semibold bg-orange-400 hover:bg-orange-500 text-white"
-                    disabled={isLoading}
+                    disabled={isLoading || isButtonDisabled}
                   >
                     {isLoading ? "Calculando..." : "Simular"}
                   </Button>
@@ -283,7 +284,7 @@ export default function ExpressCalculator() {
                 </div>
               </div>
               {showDetails && calculations.isValid && (
-                <div className="mt-8 animate-fadeIn">
+                <div className="lg:col-span-3 mt-8 animate-fadeIn">
                   <h4 className="text-lg font-semibold mb-4">
                     Detalles del Préstamo
                   </h4>
